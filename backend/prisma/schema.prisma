@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Property {
+  id       String @id @default(uuid())
+  title    String
+  location String
+  price    Float
+  leads    Lead[]
+}
+
+model Lead {
+  id                String    @id @default(uuid())
+  name              String
+  email             String
+  phone             String
+  source            String
+  score             Int       @default(0)
+  property_interest String?
+  property          Property? @relation(fields: [property_interest], references: [id])
+  createdAt         DateTime  @default(now())
+}
+
+model Ticket {
+  id          String   @id @default(uuid())
+  customer    String
+  email       String
+  subject     String
+  status      String   @default("open") // open, pending, closed
+  priority    String   @default("medium") // low, medium, high
+  description String
+  createdAt   DateTime @default(now())
+}
